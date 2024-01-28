@@ -12,7 +12,7 @@ function App() {
         <div className="length-control">
           <div id="break-label">Break Length</div>
           <button id="break-decrement" value="-" >
-            <i className="fa fa-arrow-down fa-2x"></i>
+            <i className="fa fa-light fa-arrow-down fa-2x"></i>
           </button>
           <div className="btn-level" id="break-length">5</div>
           <button id="break-increment" value="+" >
