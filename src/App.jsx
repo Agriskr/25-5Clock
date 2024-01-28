@@ -1,34 +1,45 @@
-import { useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import './App.css'
+import LengthControl from './LengthControl'
 
 function App() {
   const [count, setCount] = useState(0)
+  const [reset, setReset] = useState(0)
+  const [sessionLength, setSesionLength] = useState(25)
+  const [breakLength, setBreakLength] = useState(5);
+  const audioRef = useRef();
+
+
+  const handleReset = () => {
+    setBreakLength(5);
+    setSesionLength(25);
+    setReset(reset + 1);
+  }
+  useEffect(() => {
+    const audio = audioRef.current;
+    audio.pause();
+    audio.currentTime = 0;
+  }, [reset]);
 
   return (
     <>
 
       <h1>FCC 25+5 Clock</h1>
       <div className="card">
-        <div className="length-control">
-          <div id="break-label">Break Length</div>
-          <button id="break-decrement" value="-" >
-            <i className="fa fa-light fa-arrow-down fa-2x"></i>
-          </button>
-          <div className="btn-level" id="break-length">5</div>
-          <button id="break-increment" value="+" >
-            <i className="fa fa-arrow-up fa-2x"></i>
-          </button>
-        </div>
-        <div className="length-control">
-          <div id="session-label">Session Length</div>
-          <button id="session-decrement" value="-" >
-            <i className="fa fa-arrow-down fa-2x"></i>
-          </button>
-          <div className="btn-level" id="session-length">25</div>
-          <button id="session-increment" value="+" >
-            <i className="fa fa-arrow-up fa-2x"></i>
-          </button>
-        </div>
+        <LengthControl
+          type="break"
+          label="Break Length"
+          length={breakLength}
+          set={setBreakLength}
+        />
+
+        <LengthControl
+          type="session"
+          label="Session Length"
+          length={sessionLength}
+          set={setSesionLength}
+        />
+
 
         <div className="timer" >
           <div className="timer-wrapper">
@@ -41,13 +52,13 @@ function App() {
             <i className="fa fa-play fa-2x"></i>
             <i className="fa fa-pause fa-2x"></i>
           </button>
-          <button id="reset">
+          <button id="reset" onClick={handleReset}>
             <i className="fa fa-refresh fa-2x"></i>
           </button>
         </div>
         <div className="autor">
           <div > Coded by AK </div>
-          <audio id="beep" preload="auto" src="https://cdn.freecodecamp.org/testable-projects-fcc/audio/BeepSound.wav"></audio>
+          <audio id="beep" preload="auto" ref={audioRef} src="https://cdn.freecodecamp.org/testable-projects-fcc/audio/BeepSound.wav"></audio>
         </div>
       </div>
     </>
