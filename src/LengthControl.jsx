@@ -1,12 +1,10 @@
 import React from 'react'
-import { useState } from 'react'
+
 
 
 
 
 function LengthControl({ type, label, length, set }) {
-
-
 
     const labelName = type + "-label";
     const incrementName = type + "-increment";
@@ -23,8 +21,6 @@ function LengthControl({ type, label, length, set }) {
             set(length - 1);
         }
     }
-
-
 
     return (
         <>

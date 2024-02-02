@@ -1,25 +1,33 @@
 import { useEffect, useState, useRef } from 'react'
 import './App.css'
 import LengthControl from './LengthControl'
+import Display from './Display'
 
 function App() {
-  const [count, setCount] = useState(0)
-  const [reset, setReset] = useState(0)
+
+  const [reset, setReset] = useState(0);
   const [sessionLength, setSesionLength] = useState(25)
   const [breakLength, setBreakLength] = useState(5);
+  const [activeClock, setActiveClock] = useState("S");
+  const [started, setStarted] = useState(false);
+  const [timer, setTimer] = useState((activeClock === "S" ? sessionLength : breakLength) * 60);
   const audioRef = useRef();
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    audio.pause();
+    audio.currentTime = 0;
+  }, [reset]);
 
 
   const handleReset = () => {
     setBreakLength(5);
     setSesionLength(25);
     setReset(reset + 1);
+    setActiveClock("S");
+    setStarted(false);
+    setTimer(sessionLength * 60)
   }
-  useEffect(() => {
-    const audio = audioRef.current;
-    audio.pause();
-    audio.currentTime = 0;
-  }, [reset]);
 
   return (
     <>
@@ -40,22 +48,20 @@ function App() {
           set={setSesionLength}
         />
 
+        <Display
+          {...{
+            timer,
+            setTimer,
+            started,
+            setStarted,
+            handleReset,
+            activeClock,
+            setActiveClock,
+            sessionLength,
+            breakLength
+          }}
+        />
 
-        <div className="timer" >
-          <div className="timer-wrapper">
-            <div id="timer-label">Session</div>
-            <div id="time-left">25:00</div>
-          </div>
-        </div>
-        <div className="timer-control">
-          <button id="start_stop">
-            <i className="fa fa-play fa-2x"></i>
-            <i className="fa fa-pause fa-2x"></i>
-          </button>
-          <button id="reset" onClick={handleReset}>
-            <i className="fa fa-refresh fa-2x"></i>
-          </button>
-        </div>
         <div className="autor">
           <div > Coded by AK </div>
           <audio id="beep" preload="auto" ref={audioRef} src="https://cdn.freecodecamp.org/testable-projects-fcc/audio/BeepSound.wav"></audio>
