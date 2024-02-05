@@ -10,7 +10,7 @@ function App() {
   const [breakLength, setBreakLength] = useState(5);
   const [activeClock, setActiveClock] = useState("S");
   const [started, setStarted] = useState(false);
-  const [timer, setTimer] = useState((activeClock === "S" ? sessionLength : breakLength) * 60);
+  const [timer, setTimer] = useState(sessionLength * 60);
   const audioRef = useRef();
 
   useEffect(() => {
@@ -27,6 +27,9 @@ function App() {
     setActiveClock("S");
     setStarted(false);
     setTimer(sessionLength * 60)
+    const audio = audioRef.current;
+    audio.pause();
+    audio.currentTime = 0;
   }
 
   return (
@@ -50,6 +53,7 @@ function App() {
 
         <Display
           {...{
+            audioRef,
             timer,
             setTimer,
             started,
@@ -64,7 +68,10 @@ function App() {
 
         <div className="autor">
           <div > Coded by AK </div>
-          <audio id="beep" preload="auto" ref={audioRef} src="https://cdn.freecodecamp.org/testable-projects-fcc/audio/BeepSound.wav"></audio>
+          <audio id="beep"
+            preload="auto"
+            ref={audioRef}
+            src="https://cdn.freecodecamp.org/testable-projects-fcc/audio/BeepSound.wav"></audio>
         </div>
       </div>
     </>

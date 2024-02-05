@@ -1,35 +1,46 @@
 import React from 'react';
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 
 function Display({
+    audioRef,
     timer,
     setTimer,
     started,
     setStarted,
     handleReset,
     activeClock,
+    setActiveClock,
     sessionLength,
     breakLength }) {
-
-    console.log('timer = ', timer)
 
     useEffect(() => {
         setTimer(sessionLength * 60);
     }, [sessionLength]);
 
     useEffect(() => {
-        const interval = setInterval(() => {
-            started && setTimer((timer) => (timer >= 1 ? timer - 1 : 0))
-        }, 1000);
-        return () => {
-            clearInterval(interval)
+        setTimer((activeClock === "S" ? sessionLength : breakLength) * 60);
+    }, [activeClock]);
+
+    useEffect(() => {
+        if (started) {
+            const interval = setInterval(() => {
+                setTimer((prevTimer) => {
+                    if (prevTimer > 0) {
+                        return prevTimer - 1;
+                    } else if (prevTimer === 0) {
+                        setActiveClock(activeClock === "S" ? "B" : "S");
+                        const audio = audioRef.current;
+                        audio.play();
+                        return prevTimer;
+                    }
+                })
+            }, 1000);
+            return () => clearInterval(interval);
         }
-    }, [started])
+    }, [started, timer])
 
     const handleStartStop = () => {
         setStarted((started) => !started);
-        console.log('setstarted nostrada', started)
-
     }
 
     const timeFormatter = () => {
@@ -43,7 +54,7 @@ function Display({
     return (
         <>
             <div className="timer" >
-                <div className="timer-wrapper">
+                <div className="timer-wrapper" style={{ color: timer < 60 ? 'red' : 'white' }}>
                     <div id="timer-label"> {activeClock === "S" ? "Session" : "Break"}</div>
                     <div id="time-left">{timeFormatter()}</div>
                 </div>

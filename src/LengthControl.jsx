@@ -1,9 +1,5 @@
 import React from 'react'
 
-
-
-
-
 function LengthControl({ type, label, length, set }) {
 
     const labelName = type + "-label";
